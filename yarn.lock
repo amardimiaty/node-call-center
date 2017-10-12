@@ -138,6 +138,10 @@ any-promise@^1.0.0, any-promise@^1.1.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/any-promise/-/any-promise-1.3.0.tgz#abc6afeedcea52e809cdc0376aed3ce39635d17f"
 
+any-promise@~0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/any-promise/-/any-promise-0.1.0.tgz#830b680aa7e56f33451d4b049f3bd8044498ee27"
+
 anymatch@^1.3.0:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-1.3.2.tgz#553dcb8f91e3c889845dfdba34c77721b90b9d7a"
@@ -222,7 +226,7 @@ async-each@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
 
-async@1.5.2:
+async@1.5.2, async@^1.4.2, async@^1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
 
@@ -725,6 +729,23 @@ builtin-modules@^1.0.0, builtin-modules@^1.1.1:
 bytes@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
+
+cache-manager-fs@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/cache-manager-fs/-/cache-manager-fs-1.0.6.tgz#7b523a55751f548a2db96f19dd0d3651cfc9e523"
+  dependencies:
+    async "^1.4.2"
+    cache-manager "^1.1.0"
+    extend "^3.0.0"
+    fs-promise "^0.3.1"
+    uuid "^2.0.1"
+
+cache-manager@^1.1.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-1.5.0.tgz#529214bda57fa19514d106f070fabb16c3190811"
+  dependencies:
+    async "^1.5.2"
+    lru-cache "4.0.0"
 
 cache-manager@^2.4.0:
   version "2.4.0"
@@ -1654,6 +1675,12 @@ formidable@^1.1.1:
 fresh@^0.5.0:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
+
+fs-promise@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/fs-promise/-/fs-promise-0.3.1.tgz#bf34050368f24d6dc9dfc6688ab5cead8f86842a"
+  dependencies:
+    any-promise "~0.1.0"
 
 fs.realpath@^1.0.0:
   version "1.0.0"
@@ -4121,6 +4148,10 @@ util-deprecate@~1.0.1:
 utils-merge@1.x.x:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
+
+uuid@^2.0.1:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
 uuid@^3.0.0, uuid@^3.1.0:
   version "3.1.0"
