@@ -6,10 +6,10 @@
   "license": "MIT",
   "author": "avbel",
   "engines": {
-    "node": ">=8.6"
+    "node": ">=8.0"
   },
   "scripts": {
-    "start": "node -e \"require('./lib/index')().then(app => app.listen(process.env.PORT || 3000));\"",
+    "start": "node -e \"require('./lib/index')().then(app => app.listen(process.env.PORT || 3000), err => {console.error(err.stack); process.exit(1);});\"",
     "lint": "xo",
     "test": "ava"
   },
