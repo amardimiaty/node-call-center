@@ -11,7 +11,13 @@
   "scripts": {
     "start": "node -e \"require('./lib/index')().then(app => app.listen(process.env.PORT || 3000), err => {console.error(err.stack); process.exit(1);});\"",
     "lint": "xo",
-    "test": "ava"
+    "test": "ava",
+    "dev:frontend-server": "cd frontend && cross-env HOST=0.0.0.0 DANGEROUSLY_DISABLE_HOST_CHECK=true npm start",
+    "dev:server": "cross-env PORT=5000 npm start",
+    "dev": "npm-run-all --parallel dev:*",
+    "postinstall": "cd ./frontend && yarn && cd ..",
+    "build": "cd ./frontend && npm run build",
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "@bandwidth/node-bandwidth-extra": "^1.0.1",
@@ -22,6 +28,7 @@
     "koa-body": "^2.5.0",
     "koa-passport": "^4.0.1",
     "koa-router": "^7.2.1",
+    "koa-send": "^4.1.1",
     "koa-session": "^5.5.0",
     "koa-static": "^4.0.1",
     "moment": "^2.19.1",
@@ -31,6 +38,7 @@
   },
   "devDependencies": {
     "ava": "^0.22.0",
+    "npm-run-all": "^4.1.1",
     "supertest": "^3.0.0",
     "testdouble": "^3.2.6",
     "xo": "^0.18.2"
