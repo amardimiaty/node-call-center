@@ -38,7 +38,8 @@
   },
   "devDependencies": {
     "ava": "^0.22.0",
-    "npm-run-all": "^4.1.1",
+    "cross-env": "^5.0.5",
+		"npm-run-all": "^4.1.1",
     "supertest": "^3.0.0",
     "testdouble": "^3.2.6",
     "xo": "^0.18.2"
@@ -47,9 +48,9 @@
     "esnext": true,
     "envs": [
       "node"
-		],
-		"ignores": [
-			"frontend/**"
-		]
+    ],
+    "ignores": [
+      "frontend/**"
+    ]
   }
 }
