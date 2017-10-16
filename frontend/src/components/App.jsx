@@ -6,9 +6,23 @@ import {BandwidthThemeProvider, Navigation, Page, Spacing} from '@bandwidth/shar
 import {history} from '../store/createStore'
 import {connect} from 'react-redux'
 
+import {login, logout} from '../store/auth'
+
+import Auth from '../auth'
+
 class App extends React.Component {
 	render() {
+		const auth = new Auth()
 		const links = []
+		if (auth.isAuthenticated()) {
+			links.push({to: '#', content: 'Logout', onClick: ev => {
+				this.props.logout()
+				ev.preventDefault()
+			}})
+		} else {
+			this.props.login();
+			return null
+		}
 		return (
 			<BandwidthThemeProvider>
 				<ConnectedRouter history={history}>
@@ -28,4 +42,9 @@ class App extends React.Component {
 	}
 }
 
-export default connect()(App)
+export default connect(
+	dispatch => ({
+		login: () => dispatch(login()),
+		logout: () => dispatch(logout())
+	})
+)(App)

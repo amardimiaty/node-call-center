@@ -47,6 +47,9 @@
     "esnext": true,
     "envs": [
       "node"
-    ]
+		],
+		"ignores": [
+			"frontend/**"
+		]
   }
 }
