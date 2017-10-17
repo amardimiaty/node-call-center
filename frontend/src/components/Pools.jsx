@@ -24,11 +24,34 @@ class Pools extends React.Component {
 	}
 
 	renderDetails(item) {
-		return (null)
+		return (<Form onSubmit={ev => updatePool(ev)}>
+					<FlexFields>
+						<TextField
+							label="Agents phone numbers"
+							name="forwarders"
+							type="text"
+							input={{
+								value: (updatePool.forwarders || []).join(', '),
+								onChange: ev => updatePoolSetForwards(ev.target.value)
+							}}
+							required
+						/>
+						<TextField
+							label="Greeting text"
+							name="greeting"
+							type="text"
+							input={{
+								value: updatePool.greeting,
+								onChange: ev => updatePoolSetGreeting(ev.target.value)
+							}}
+						/>
+					</FlexFields>
+					<SubmitButtonField loading={updating}>Save</SubmitButtonField>
+				</Form>)
 	}
 
 	render() {
-		const {error, loading, creating, createPoolNumber, createPool, setNumber, pools} = this.props
+		const {error, loading, creating, createPool, updatePool, pools, createPoolSetAreaCode, createPoolSetForwards} = this.props
 		const renderRow = this.renderRow.bind(this)
 		const renderDetails = this.renderDetails.bind(this)
 		return (
@@ -37,14 +60,33 @@ class Pools extends React.Component {
 				<Form onSubmit={ev => createPool(ev)}>
 					<FlexFields>
 						<TextField
-							label="Phone Number"
-							name="number"
-							type="tel"
+							label="Area code for phone number to reserve"
+							name="areacode"
+							type="text"
 							input={{
-								value: createPoolNumber,
-								onChange: ev => setNumber(ev.target.value)
+								value: createPool.areaCode,
+								onChange: ev => createPoolSetAreaCode(ev.target.value)
 							}}
 							required
+						/>
+						<TextField
+							label="Agents phone numbers to forward calls (comma separated)"
+							name="forwarders"
+							type="text"
+							input={{
+								value: (createPool.forwarders || []).join(', '),
+								onChange: ev => createPoolSetForwards(ev.target.value)
+							}}
+							required
+						/>
+						<TextField
+							label="Greeting text"
+							name="greeting"
+							type="text"
+							input={{
+								value: createPool.greeting,
+								onChange: ev => createPoolSetGreeting(ev.target.value)
+							}}
 						/>
 					</FlexFields>
 					<SubmitButtonField loading={creating}>Create Pool</SubmitButtonField>

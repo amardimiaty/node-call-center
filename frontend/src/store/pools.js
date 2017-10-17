@@ -81,11 +81,11 @@ export default (state = {}, action) => {
 		}
 		case `${UPDATE_POOL}_START`:
 		case `${REMOVE_POOL}_START`: {
-			return {...state, error: null}
+			return {...state, error: null, updating: true}
 		}
 		case `${REMOVE_POOL}_ERROR`:
 		case `${REMOVE_POOL}_ERROR`: {
-			return {...state, id: null, error: action.error}
+			return {...state, id: null, error: action.error, updating: false}
 		}
 		case `${REMOVE_POOL}_SUCCESS`: {
 			const {id, pools} = state
@@ -93,7 +93,7 @@ export default (state = {}, action) => {
 			if (pool) {
 				pools.splice(pools.indexOf(pool), 1)
 			}
-			return {...state, error: null, id: null, pools}
+			return {...state, error: null, id: null, pools, updating: false}
 		}
 		case `${UPDATE_POOL}_SUCCESS`: {
 			const {id, pools, updatePool} = state
@@ -101,7 +101,7 @@ export default (state = {}, action) => {
 			if (pool) {
 				pools[pools.indexOf(pool)] = Object.assign({}, pool, updatePool)
 			}
-			return {...state, error: null, id: null, pools, updatePool: {}}
+			return {...state, error: null, id: null, pools, updatePool: {}, updating: false}
 		}
 		case SET_POOL_ID: {
 			return {...state, id: action.id}
