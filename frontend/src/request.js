@@ -30,7 +30,7 @@ export default function request(action, path, method='GET', stateName='', option
 
 async function checkResponse(r) {
 	if (r.status === 401) {
-		history.push('/login')
+		location.href = '/login'
 		return
 	}
 	if((r.headers.get('Content-Type') || '').indexOf('/json') >= 0) {

@@ -6,26 +6,33 @@ import {BandwidthThemeProvider, Navigation, Page, Spacing} from '@bandwidth/shar
 import {history} from '../store/createStore'
 import {connect} from 'react-redux'
 
-import {login, logout} from '../store/auth'
+import {getProfile} from '../store/profile'
+import {logout} from '../store/login'
 
-import Auth from '../auth'
-
-class Auth0Callback extends React.Component {
-	render() {
-		const auth = new Auth()
-		auth.handleAuthentication();
-		return <div>Wait ...</div>
-	}
-}
+import Pools from './Pools.jsx'
 
 class App extends React.Component {
+	componentWillMount() {
+		this.props.getProfile()
+	}
 	render() {
-		const auth = new Auth()
+		if (!this.props.profile.loaded) {
+			return (null)
+		}
 		const links = []
-		links.push({to: '#', content: 'Logout', onClick: ev => {
-			this.props.logout()
+		const isLoggedIn = this.props.profile.id
+		const goToLogin = ev => {
+			window.location.href = '/login'
 			ev.preventDefault()
-		}})
+		}
+		if (isLoggedIn) {
+			links.push({to: '#', content: 'Logout', onClick: ev => {
+				this.props.logout().then(() => this.props.getProfile()).then(() => history.push('/login'))
+				ev.preventDefault()
+			}})
+		} else {
+			links.push({to: '#', exact: true, content: 'Login', onClick: goToLogin})
+		}
 		return (
 			<BandwidthThemeProvider>
 				<ConnectedRouter history={history}>
@@ -36,7 +43,11 @@ class App extends React.Component {
 							/>
 						<Page>
 							<Spacing>
-							<Route path="/auth0/callback" component={Auth0Callback}/>
+								{ (isLoggedIn) ?
+									(<Redirect from="/" to="/number-pools"/>) :
+									(<Redirect from="/" to="/login"/>)
+								}
+								<Route path="/number-pools" component={Pools}/>
 							</Spacing>
 						</Page>
 					</div>
@@ -48,10 +59,11 @@ class App extends React.Component {
 
 export default connect(
 	state => ({
-		router: state.router
+		profile: state.profile
 	}),
 	dispatch => ({
-		login: () => dispatch(login()),
+		getProfile: password => dispatch(getProfile()),
 		logout: () => dispatch(logout())
 	})
 )(App)
+
