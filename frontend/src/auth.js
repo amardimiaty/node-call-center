@@ -1,5 +1,5 @@
 import {WebAuth} from 'auth0-js'
-import {history} from './store/createStore'
+// import {history} from './store/createStore'
 
 export default class Auth {
 	getAuth0() {
@@ -9,7 +9,7 @@ export default class Auth {
 				return new WebAuth({
 					domain: data.domain,
 					clientID: data.clientId,
-					redirectUri: `${location.origin}${data.callbackPath}`,
+					redirectUri: `${window.location.origin}${data.callbackPath}`,
 					audience: `https://${data.domain}/userinfo`,
 					responseType: 'token id_token',
 					scope: 'openid profile'
@@ -18,7 +18,7 @@ export default class Auth {
 	}
 
 	login() {
-		return this.getAuth0().then(a => a.authorize()).then(() => this.getProfile());
+		return this.getAuth0().then(a => a.authorize()); //.then(() => this.getProfile());
 	}
 
 	handleAuthentication() {
@@ -38,14 +38,14 @@ export default class Auth {
 		localStorage.setItem('access_token', authResult.accessToken)
 		localStorage.setItem('id_token', authResult.idToken)
 		localStorage.setItem('expires_at', expiresAt)
-		history.replace('/')
+		//history.replace('/')
 	}
 
 	logout() {
 		localStorage.removeItem('access_token')
 		localStorage.removeItem('id_token')
 		localStorage.removeItem('expires_at')
-		history.replace('/')
+		//history.replace('/')
 	}
 
 	isAuthenticated() {
