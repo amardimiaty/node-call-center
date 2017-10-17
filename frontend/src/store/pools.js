@@ -48,7 +48,7 @@ export default (state = {}, action) => {
 		}
 		case CREATE_POOL_SET_FORWARDS: {
 			const createPool = state.createPool || {};
-			createPool.forwards = action.forwards;
+			createPool.forwards = action.forwards.split(',').map(f => f.trim()).filter(f => f);
 			return {...state, createPool}
 		}
 		case UPDATE_POOL_SET_GREETING: {
@@ -58,7 +58,7 @@ export default (state = {}, action) => {
 		}
 		case UPDATE_POOL_SET_FORWARDS: {
 			const updatePool = state.updatePool || {};
-			updatePool.forwards = action.forwards;
+			updatePool.forwards = action.forwards.split(',').map(f => f.trim()).filter(f => f);
 			return {...state, updatePool}
 		}
 		case `${CREATE_POOL}_ERROR`: {
@@ -79,7 +79,7 @@ export default (state = {}, action) => {
 		case `${GET_POOLS}_SUCCESS`: {
 			return {...state, error: null, loading: false, pools: action.result || []}
 		}
-		case `${UPDATEE_POOL}_START`:
+		case `${UPDATE_POOL}_START`:
 		case `${REMOVE_POOL}_START`: {
 			return {...state, error: null}
 		}

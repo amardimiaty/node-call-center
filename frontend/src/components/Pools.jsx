@@ -1,6 +1,6 @@
 import React from 'react'
 import {Spacing} from '@bandwidth/shared-components'
-import {removePool, getPools, createPool, SET_NUMBER, SET_FORWARDS, SET_POOL_ID} from '../store/pools'
+import {getPools, createPool, updatePool, removePool, CREATE_POOL_SET_AREA_CODE, CREATE_POOL_SET_FORWARDS, CREATE_POOL_SET_GREETING, UPDATE_POOL_SET_FORWARDS, UPDATE_POOL_SET_GREETING, SET_POOL_ID} from '../store/pools'
 
 class Pools extends React.Component {
 	columns = [
@@ -66,6 +66,12 @@ export default connect(
 		creating: state.pools.creating
 	}),
 	dispatch => ({
+		updatePool: (ev, id) => {
+			ev.preventDefault()
+			ev.stopPropagation()
+			dispatch({type: SET_POOL_ID, id: id})
+			dispatch(updatePool(id))
+		},
 		removePool: (ev, id) => {
 			ev.preventDefault()
 			ev.stopPropagation()
@@ -74,8 +80,20 @@ export default connect(
 				dispatch(removePool(id))
 			}
 		},
-		setNumber: number => {
-			dispatch({type: SET_NUMBER, number})
+		createPoolSetAreaCode: areaCode => {
+			dispatch({type: CREATE_POOL_SET_AREA_CODE, areaCode})
+		},
+		createPoolSetGreeting: greeting => {
+			dispatch({type: CREATE_POOL_SET_GREETING, greeting})
+		},
+		createPoolSetForwards: forwards => {
+			dispatch({type: CREATE_POOL_SET_FORWARDS, forwards})
+		},
+		updatePoolSetGreeting: greeting => {
+			dispatch({type: UPDATE_POOL_SET_GREETING, greeting})
+		},
+		updatePoolSetForwards: forwards => {
+			dispatch({type: UPDATE_POOL_SET_FORWARDS, forwards})
 		},
 		getPools: () => dispatch(getPools()),
 		createPool: ev => {
