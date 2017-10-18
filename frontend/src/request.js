@@ -1,5 +1,3 @@
-import {history} from './store/createStore'
-
 export default function request(action, path, method='GET', stateName='', options={}) {
 	return async function(dispatch, getState) {
 		dispatch({type: `${action}_START`})
@@ -30,7 +28,7 @@ export default function request(action, path, method='GET', stateName='', option
 
 async function checkResponse(r) {
 	if (r.status === 401) {
-		location.href = '/login'
+		window.location.href = '/login'
 		return
 	}
 	if((r.headers.get('Content-Type') || '').indexOf('/json') >= 0) {

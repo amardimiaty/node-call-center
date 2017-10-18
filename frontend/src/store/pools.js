@@ -33,9 +33,6 @@ export function removePool(id) {
 
 export default (state = {}, action) => {
 	switch (action.type) {
-		case `${GET_PROFILE}_SUCCESS`: {
-			return {...action.result, loaded: true}
-		}
 		case CREATE_POOL_SET_AREA_CODE: {
 			const createPool = state.createPool || {};
 			createPool.areaCode = action.areaCode;
@@ -83,7 +80,7 @@ export default (state = {}, action) => {
 		case `${REMOVE_POOL}_START`: {
 			return {...state, error: null, updating: true}
 		}
-		case `${REMOVE_POOL}_ERROR`:
+		case `${UPDATE_POOL}_ERROR`:
 		case `${REMOVE_POOL}_ERROR`: {
 			return {...state, id: null, error: action.error, updating: false}
 		}

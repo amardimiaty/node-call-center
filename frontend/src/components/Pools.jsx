@@ -1,5 +1,8 @@
 import React from 'react'
-import {Spacing} from '@bandwidth/shared-components'
+import {connect} from 'react-redux'
+import {push} from 'react-router-redux'
+
+import {Spacing, Table, Button, Form, FlexFields, FieldGroup, TextField, SubmitButtonField, Alert} from '@bandwidth/shared-components'
 import {getPools, createPool, updatePool, removePool, CREATE_POOL_SET_AREA_CODE, CREATE_POOL_SET_FORWARDS, CREATE_POOL_SET_GREETING, UPDATE_POOL_SET_FORWARDS, UPDATE_POOL_SET_GREETING, SET_POOL_ID} from '../store/pools'
 
 class Pools extends React.Component {
@@ -24,12 +27,12 @@ class Pools extends React.Component {
 	}
 
 	renderDetails(item) {
+		const {updatePool, updatePoolSetForwards, updatePoolSetGreeting, updating} = this.props
 		return (<Form onSubmit={ev => updatePool(ev)}>
 					<FlexFields>
 						<TextField
 							label="Agents phone numbers"
 							name="forwarders"
-							type="text"
 							input={{
 								value: (updatePool.forwarders || []).join(', '),
 								onChange: ev => updatePoolSetForwards(ev.target.value)
@@ -39,7 +42,6 @@ class Pools extends React.Component {
 						<TextField
 							label="Greeting text"
 							name="greeting"
-							type="text"
 							input={{
 								value: updatePool.greeting,
 								onChange: ev => updatePoolSetGreeting(ev.target.value)
@@ -51,45 +53,45 @@ class Pools extends React.Component {
 	}
 
 	render() {
-		const {error, loading, creating, createPool, updatePool, pools, createPoolSetAreaCode, createPoolSetForwards} = this.props
+		const {error, loading, creating, createPool, pools, createPoolSetAreaCode, createPoolSetForwards, createPoolSetGreeting} = this.props
 		const renderRow = this.renderRow.bind(this)
 		const renderDetails = this.renderDetails.bind(this)
 		return (
 			<Spacing>
 				{error && <Alert type="error">{error}</Alert>}
 				<Form onSubmit={ev => createPool(ev)}>
-					<FlexFields>
-						<TextField
-							label="Area code for phone number to reserve"
-							name="areacode"
-							type="text"
-							input={{
-								value: createPool.areaCode,
-								onChange: ev => createPoolSetAreaCode(ev.target.value)
-							}}
-							required
-						/>
-						<TextField
-							label="Agents phone numbers to forward calls (comma separated)"
-							name="forwarders"
-							type="text"
-							input={{
-								value: (createPool.forwarders || []).join(', '),
-								onChange: ev => createPoolSetForwards(ev.target.value)
-							}}
-							required
-						/>
-						<TextField
-							label="Greeting text"
-							name="greeting"
-							type="text"
-							input={{
-								value: createPool.greeting,
-								onChange: ev => createPoolSetGreeting(ev.target.value)
-							}}
-						/>
-					</FlexFields>
-					<SubmitButtonField loading={creating}>Create Pool</SubmitButtonField>
+					<TextField
+						label="Area Code"
+						name="areacode"
+						input={{
+							value: createPool.areaCode,
+							onChange: ev => createPoolSetAreaCode(ev.target.value)
+						}}
+						helpText="Area code for phone number to reserve"
+						required
+					/>
+					<TextField
+						label="Agents Phone Numbers"
+						name="forwarders"
+						input={{
+							value: (createPool.forwarders || []).join(', '),
+							onChange: ev => createPoolSetForwards(ev.target.value)
+						}}
+						helpText="Agents phone numbers to forward calls (comma separated)"
+						required
+					/>
+					<TextField
+						label="Greeting text"
+						name="greeting"
+						input={{
+							value: createPool.greeting,
+							onChange: ev => createPoolSetGreeting(ev.target.value)
+						}}
+						helpText="Optional greeting message for clients. If empty default greeting will be used."
+					/>
+					<FieldGroup>
+						<SubmitButtonField loading={creating}>Create Pool</SubmitButtonField>
+					</FieldGroup>
 				</Form>
 				<Spacing/>
 				<Table.Simple items={pools} columns={this.columns} renderRow={renderRow} renderDetails={renderDetails} loading={loading}>
