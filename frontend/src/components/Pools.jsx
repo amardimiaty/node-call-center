@@ -2,14 +2,14 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
-import {Spacing, Table, Button, Form, FlexFields, FieldGroup, TextField, SubmitButtonField, Alert} from '@bandwidth/shared-components'
-import {getPools, createPool, updatePool, removePool, CREATE_POOL_SET_AREA_CODE, CREATE_POOL_SET_FORWARDS, CREATE_POOL_SET_GREETING, UPDATE_POOL_SET_FORWARDS, UPDATE_POOL_SET_GREETING, SET_POOL_ID} from '../store/pools'
+import {Spacing, Table, Button, Form, FlexFields, FormBox, FormSectionHeader, TextField, SubmitButton, Alert, FieldWrapper} from '@bandwidth/shared-components'
+import {getPools, savePool, removePool, START_EDIT, SET_AREA_CODE, SET_FORWARDS, SET_GREETING} from '../store/pools'
 
 class Pools extends React.Component {
 	columns = [
     {name: 'phoneNumber', displayName: 'Number'},
-		{name: 'greeting', displayName: 'Greeting'},
 		{name: 'forwards', displayName: 'Agent Numbers'},
+		{name: 'greeting', displayName: 'Greeting'},
 		{name: 'actions', displayName: ''}
 	]
 
@@ -20,81 +20,57 @@ class Pools extends React.Component {
 	renderRow(item) {
 		return (<Table.Row key={item.id}>
 			<Table.Cell>{item.phoneNumber}</Table.Cell>
-			<Table.Cell>{item.greeting && '(default)'}</Table.Cell>
 			<Table.Cell>{(item.forwards || []).join(', ')}</Table.Cell>
-			<Table.Cell><Button onClick={ev => this.props.removeButton(ev, item.id)}>Remove</Button><Button onClick={ev => this.props.showCalls(ev, item.id)}>Calls</Button></Table.Cell>
+			<Table.Cell>{item.greeting || '(default)'}</Table.Cell>
+			<Table.Cell><Button onClick={ev => this.props.startEdit(ev, item.id)}>Edit</Button><Button onClick={ev => this.props.removePool(ev, item.id)}>Remove</Button><Button onClick={ev => this.props.showCalls(ev, item.id)}>Calls</Button></Table.Cell>
 		</Table.Row>)
 	}
 
-	renderDetails(item) {
-		const {updatePool, updatePoolSetForwards, updatePoolSetGreeting, updating} = this.props
-		return (<Form onSubmit={ev => updatePool(ev)}>
-					<FlexFields>
+	render() {
+		const {error, loading, saving, changes, pools, setAreaCode, setForwards, setGreeting, savePool} = this.props
+		const renderRow = this.renderRow.bind(this)
+		const isNewPool = !changes.id;
+		return (
+			<Spacing>
+				{error && <Alert type="error">{error}</Alert>}
+				<FormBox>
+					<Form onSubmit={ev => savePool(ev)}>
+						{isNewPool && (<TextField
+							label="Area code"
+							name="areaCode"
+							input={{
+								value: changes.areaCode,
+								onChange: ev => setAreaCode(ev.target.value)
+							}}
+							helpText="Area code of phone number to reserve. All calls to this number will be redirected to agents."
+							required
+						/>)}
 						<TextField
 							label="Agents phone numbers"
 							name="forwarders"
 							input={{
-								value: (updatePool.forwarders || []).join(', '),
-								onChange: ev => updatePoolSetForwards(ev.target.value)
+								value: changes.forwardsString,
+								onChange: ev => setForwards(ev.target.value)
 							}}
+							helpText="Agents phone numbers to forward calls (comma separated)"
 							required
 						/>
 						<TextField
-							label="Greeting text"
+							label="Greeting"
 							name="greeting"
 							input={{
-								value: updatePool.greeting,
-								onChange: ev => updatePoolSetGreeting(ev.target.value)
+								value: changes.greeting,
+								onChange: ev => setGreeting(ev.target.value)
 							}}
+							helpText="Greeting message to caller. If empty default message will be used."
 						/>
-					</FlexFields>
-					<SubmitButtonField loading={updating}>Save</SubmitButtonField>
-				</Form>)
-	}
-
-	render() {
-		const {error, loading, creating, createPool, pools, createPoolSetAreaCode, createPoolSetForwards, createPoolSetGreeting} = this.props
-		const renderRow = this.renderRow.bind(this)
-		const renderDetails = this.renderDetails.bind(this)
-		return (
-			<Spacing>
-				{error && <Alert type="error">{error}</Alert>}
-				<Form onSubmit={ev => createPool(ev)}>
-					<TextField
-						label="Area Code"
-						name="areacode"
-						input={{
-							value: createPool.areaCode,
-							onChange: ev => createPoolSetAreaCode(ev.target.value)
-						}}
-						helpText="Area code for phone number to reserve"
-						required
-					/>
-					<TextField
-						label="Agents Phone Numbers"
-						name="forwarders"
-						input={{
-							value: (createPool.forwarders || []).join(', '),
-							onChange: ev => createPoolSetForwards(ev.target.value)
-						}}
-						helpText="Agents phone numbers to forward calls (comma separated)"
-						required
-					/>
-					<TextField
-						label="Greeting text"
-						name="greeting"
-						input={{
-							value: createPool.greeting,
-							onChange: ev => createPoolSetGreeting(ev.target.value)
-						}}
-						helpText="Optional greeting message for clients. If empty default greeting will be used."
-					/>
-					<FieldGroup>
-						<SubmitButtonField loading={creating}>Create Pool</SubmitButtonField>
-					</FieldGroup>
-				</Form>
+						<div>
+							<SubmitButton loading={saving}>{isNewPool ? "Create Pool" : "Save"}</SubmitButton>
+						</div>
+					</Form>
+				</FormBox>
 				<Spacing/>
-				<Table.Simple items={pools} columns={this.columns} renderRow={renderRow} renderDetails={renderDetails} loading={loading}>
+				<Table.Simple items={pools} columns={this.columns} renderRow={renderRow} loading={loading}>
 				</Table.Simple>
 			</Spacing>
 		)
@@ -104,49 +80,42 @@ class Pools extends React.Component {
 export default connect(
 	state => ({
 		pools: state.pools.pools || [],
-		createPoolNumber: state.pools.createPoolNumber,
+		changes: state.pools.changes || {},
 		error: state.pools.error,
 		loading: state.pools.loading,
-		creating: state.pools.creating
+		saving: state.pools.saving
 	}),
 	dispatch => ({
-		updatePool: (ev, id) => {
+		savePool: ev => {
 			ev.preventDefault()
 			ev.stopPropagation()
-			dispatch({type: SET_POOL_ID, id: id})
-			dispatch(updatePool(id))
+			dispatch(savePool())
 		},
 		removePool: (ev, id) => {
 			ev.preventDefault()
 			ev.stopPropagation()
 			if (window.confirm('Are you sure?')) {
-				dispatch({type: SET_POOL_ID, id: id})
 				dispatch(removePool(id))
 			}
 		},
-		createPoolSetAreaCode: areaCode => {
-			dispatch({type: CREATE_POOL_SET_AREA_CODE, areaCode})
+		setAreaCode: areaCode => {
+			dispatch({type: SET_AREA_CODE, areaCode})
 		},
-		createPoolSetGreeting: greeting => {
-			dispatch({type: CREATE_POOL_SET_GREETING, greeting})
+		setGreeting: greeting => {
+			dispatch({type: SET_GREETING, greeting})
 		},
-		createPoolSetForwards: forwards => {
-			dispatch({type: CREATE_POOL_SET_FORWARDS, forwards})
-		},
-		updatePoolSetGreeting: greeting => {
-			dispatch({type: UPDATE_POOL_SET_GREETING, greeting})
-		},
-		updatePoolSetForwards: forwards => {
-			dispatch({type: UPDATE_POOL_SET_FORWARDS, forwards})
+		setForwards: forwards => {
+			dispatch({type: SET_FORWARDS, forwards})
 		},
 		getPools: () => dispatch(getPools()),
-		createPool: ev => {
-			dispatch(createPool())
-			ev.preventDefault()
-		},
 		showCalls: (ev, id) => {
 			dispatch(push(`/calls?pool=${id}`))
 			ev.preventDefault()
+		},
+		startEdit: (ev, id) => {
+			ev.preventDefault()
+			ev.stopPropagation()
+			dispatch({type: START_EDIT, id})
 		}
 	})
 )(Pools)

@@ -1,88 +1,70 @@
 import request from '../request'
 
-export const GET_POOLS = 'PROFILE/GET_POOLS'
-export const CREATE_POOL = 'PROFILE/CREATE_POOL'
-export const UPDATE_POOL = 'PROFILE/UPDATE_POOL'
-export const REMOVE_POOL = 'PROFILE/REMOVE_POOL'
+export const GET_POOLS = 'POOLS/GET_POOLS'
+export const SAVE_POOL = 'POOLS/SAVE_POOL'
+export const REMOVE_POOL = 'POOLS/REMOVE_POOL'
 
-export const SET_POOL_ID = 'POOLS/SET_POOL_ID'
+export const START_EDIT = 'POOLS/START_EDIT'
 
-export const CREATE_POOL_SET_AREA_CODE = 'POOLS/CREATE_POOL_SET_AREA_CODE'
-export const CREATE_POOL_SET_FORWARDS = 'POOLS/CREATE_POOL_SET_FORWARDS'
-export const CREATE_POOL_SET_GREETING = 'POOLS/CREATE_POOL_SET_GREETING'
+export const SET_AREA_CODE = 'POOLS/SET_AREA_CODE'
+export const SET_FORWARDS = 'POOLS/SET_FORWARDS'
+export const SET_GREETING = 'POOLS/SET_GREETING'
 
-export const UPDATE_POOL_SET_FORWARDS = 'POOLS/UPDATE_POOL_SET_FORWARDS'
-export const UPDATE_POOL_SET_GREETING = 'POOLS/UPDATE_POOL_SET_GREETING'
 
 export function getPools() {
 	return (dispatch, getState) => dispatch(request(GET_POOLS, '/pools'))
 }
 
-export function createPool() {
-	return (dispatch, getState) => dispatch(request(CREATE_POOL, '/pools', 'POST', 'pools.createPool'))
-}
-
-export function updatePool(id) {
-	return (dispatch, getState) => dispatch(request(UPDATE_POOL, `/pools/${id}`, 'POST', 'pools.updatePool'))
+export function savePool() {
+	return (dispatch, getState) => {
+		const state = getState()
+		let path = '/pools'
+		if (state.pools.changes.id) {
+			path = `${path}/${state.pools.changes.id}`
+		}
+		dispatch(request(SAVE_POOL, path, 'POST', 'pools.changes'))
+	}
 }
 
 export function removePool(id) {
 	return (dispatch, getState) => dispatch(request(REMOVE_POOL, `/pools/${id}`, 'DELETE'))
 }
 
-
 export default (state = {}, action) => {
 	switch (action.type) {
-		case CREATE_POOL_SET_AREA_CODE: {
-			const createPool = state.createPool || {};
-			createPool.areaCode = action.areaCode;
-			return {...state, createPool}
+		case SET_AREA_CODE: {
+			const changes = state.changes || {}
+			changes.areaCode = action.areaCode
+			return {...state, changes}
 		}
-		case CREATE_POOL_SET_GREETING: {
-			const createPool = state.createPool || {};
-			createPool.greeting = action.greeting;
-			return {...state, createPool}
+		case SET_GREETING: {
+			const changes = state.changes || {};
+			changes.greeting = action.greeting
+			return {...state, changes}
 		}
-		case CREATE_POOL_SET_FORWARDS: {
-			const createPool = state.createPool || {};
-			createPool.forwards = action.forwards.split(',').map(f => f.trim()).filter(f => f);
-			return {...state, createPool}
-		}
-		case UPDATE_POOL_SET_GREETING: {
-			const updatePool = state.updatePool || {};
-			updatePool.greeting = action.greeting;
-			return {...state, updatePool}
-		}
-		case UPDATE_POOL_SET_FORWARDS: {
-			const updatePool = state.updatePool || {};
-			updatePool.forwards = action.forwards.split(',').map(f => f.trim()).filter(f => f);
-			return {...state, updatePool}
-		}
-		case `${CREATE_POOL}_ERROR`: {
-			return {...state, error: action.error, creating: false}
-		}
-		case `${CREATE_POOL}_SUCCESS`: {
-			const {pools} = state
-			action.result.isNew = true
-			pools.unshift(action.result)
-			return {...state, error: null, creating: false, success: true, pools, createPool: {}}
+		case SET_FORWARDS: {
+			const changes = state.changes || {};
+			changes.forwardsString = action.forwards
+			changes.forwards = action.forwards.split(',').map(f => f.trim()).filter(f => f)
+			return {...state, changes}
 		}
 		case `${GET_POOLS}_ERROR`: {
 			return {...state, error: action.error, loading: false}
 		}
 		case `${GET_POOLS}_START`: {
-			return {...state, error: null, loading: true, createPool: {}, pools: []}
+			return {...state, error: null, loading: true, changes: {}, pools: []}
 		}
 		case `${GET_POOLS}_SUCCESS`: {
 			return {...state, error: null, loading: false, pools: action.result || []}
 		}
-		case `${UPDATE_POOL}_START`:
+		case `${SAVE_POOL}_START`:
 		case `${REMOVE_POOL}_START`: {
-			return {...state, error: null, updating: true}
+			const {changes} = state
+			return {...state, error: null, saving: true, id: action.id || changes.id}
 		}
-		case `${UPDATE_POOL}_ERROR`:
+		case `${SAVE_POOL}_ERROR`:
 		case `${REMOVE_POOL}_ERROR`: {
-			return {...state, id: null, error: action.error, updating: false}
+			return {...state, id: null, error: action.error, saving: false, changes: {}}
 		}
 		case `${REMOVE_POOL}_SUCCESS`: {
 			const {id, pools} = state
@@ -90,18 +72,24 @@ export default (state = {}, action) => {
 			if (pool) {
 				pools.splice(pools.indexOf(pool), 1)
 			}
-			return {...state, error: null, id: null, pools, updating: false}
+			return {...state, error: null, id: null, pools, saving: false}
 		}
-		case `${UPDATE_POOL}_SUCCESS`: {
-			const {id, pools, updatePool} = state
+		case `${SAVE_POOL}_SUCCESS`: {
+			const {id, pools, changes} = state
 			const pool = pools.filter(b => b.id === id)[0]
-			if (pool) {
-				pools[pools.indexOf(pool)] = Object.assign({}, pool, updatePool)
+			if (action.result && action.result.id) {
+				action.result.isNew = true
+				pools.unshift(action.result)
+			} else {
+				pools[pools.indexOf(pool)] = Object.assign({}, pool, changes)
 			}
-			return {...state, error: null, id: null, pools, updatePool: {}, updating: false}
+			return {...state, error: null, id: null, pools, changes: {}, saving: false}
 		}
-		case SET_POOL_ID: {
-			return {...state, id: action.id}
+		case START_EDIT: {
+			const {pools} = state
+			const pool = pools.filter(b => b.id === action.id)[0]
+			pool.forwardsString = (pool.forwards || []).join(', ')
+			return {...state, changes: pool}
 		}
 		default: {
 			return {...state}
