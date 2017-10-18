@@ -87,7 +87,7 @@ export default (state = {}, action) => {
 		}
 		case START_EDIT: {
 			const {pools} = state
-			const pool = pools.filter(b => b.id === action.id)[0]
+			const pool = Object.assign({}, pools.filter(b => b.id === action.id)[0])
 			pool.forwardsString = (pool.forwards || []).join(', ')
 			return {...state, changes: pool}
 		}

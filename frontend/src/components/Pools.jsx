@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
-import {Spacing, Table, Button, Form, FlexFields, FormBox, FormSectionHeader, TextField, SubmitButton, Alert, FieldWrapper} from '@bandwidth/shared-components'
+import {Spacing, Table, Button, Form, FormBox, TextField, SubmitButton, Alert} from '@bandwidth/shared-components'
 import {getPools, savePool, removePool, START_EDIT, SET_AREA_CODE, SET_FORWARDS, SET_GREETING} from '../store/pools'
 
 class Pools extends React.Component {
@@ -22,14 +22,26 @@ class Pools extends React.Component {
 			<Table.Cell>{item.phoneNumber}</Table.Cell>
 			<Table.Cell>{(item.forwards || []).join(', ')}</Table.Cell>
 			<Table.Cell>{item.greeting || '(default)'}</Table.Cell>
-			<Table.Cell><Button onClick={ev => this.props.startEdit(ev, item.id)}>Edit</Button><Button onClick={ev => this.props.removePool(ev, item.id)}>Remove</Button><Button onClick={ev => this.props.showCalls(ev, item.id)}>Calls</Button></Table.Cell>
+			<Table.Cell><Button onClick={ev => this.props.startEdit(ev, item.id)}>Edit</Button><Button onClick={ev => this.props.removePool(ev, item.id)}>Remove</Button><Button className="messages-button" onClick={ev => this.props.showCalls(ev, item.id)}>Calls</Button></Table.Cell>
 		</Table.Row>)
 	}
 
 	render() {
 		const {error, loading, saving, changes, pools, setAreaCode, setForwards, setGreeting, savePool} = this.props
 		const renderRow = this.renderRow.bind(this)
-		const isNewPool = !changes.id;
+		const isNewPool = !changes.id
+		const areaCodeInput = {
+			value: changes.areaCode,
+			onChange: ev => setAreaCode(ev.target.value)
+		}
+		const forwardersInput = {
+			value: changes.forwardsString,
+			onChange: ev => setForwards(ev.target.value)
+		}
+		const greetingInput = {
+			value: changes.greeting,
+			onChange: ev => setGreeting(ev.target.value)
+		}
 		return (
 			<Spacing>
 				{error && <Alert type="error">{error}</Alert>}
@@ -38,33 +50,24 @@ class Pools extends React.Component {
 						{isNewPool && (<TextField
 							label="Area code"
 							name="areaCode"
-							input={{
-								value: changes.areaCode,
-								onChange: ev => setAreaCode(ev.target.value)
-							}}
+							input={areaCodeInput}
 							helpText="Area code of phone number to reserve. All calls to this number will be redirected to agents."
 							required
 						/>)}
 						<TextField
 							label="Agents phone numbers"
 							name="forwarders"
-							input={{
-								value: changes.forwardsString,
-								onChange: ev => setForwards(ev.target.value)
-							}}
+							input={forwardersInput}
 							helpText="Agents phone numbers to forward calls (comma separated)"
 							required
 						/>
 						<TextField
 							label="Greeting"
 							name="greeting"
-							input={{
-								value: changes.greeting,
-								onChange: ev => setGreeting(ev.target.value)
-							}}
+							input={greetingInput}
 							helpText="Greeting message to caller. If empty default message will be used."
 						/>
-						<div>
+						<div className="submit-button">
 							<SubmitButton loading={saving}>{isNewPool ? "Create Pool" : "Save"}</SubmitButton>
 						</div>
 					</Form>
