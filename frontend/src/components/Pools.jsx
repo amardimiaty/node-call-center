@@ -112,7 +112,7 @@ export default connect(
 		},
 		getPools: () => dispatch(getPools()),
 		showCalls: (ev, id) => {
-			dispatch(push(`/calls?pool=${id}`))
+			dispatch(push(`/pool-calls?pool=${id}`))
 			ev.preventDefault()
 		},
 		startEdit: (ev, id) => {

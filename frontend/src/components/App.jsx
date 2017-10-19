@@ -10,6 +10,7 @@ import {getProfile} from '../store/profile'
 import {logout} from '../store/login'
 
 import Pools from './Pools.jsx'
+import Calls from './Calls.jsx'
 
 class App extends React.Component {
 	componentWillMount() {
@@ -48,6 +49,7 @@ class App extends React.Component {
 									(<Redirect from="/" to="/login"/>)
 								}
 								<Route path="/number-pools" component={Pools}/>
+								<Route path="/pool-calls" component={Calls}/>
 							</Spacing>
 						</Page>
 					</div>
