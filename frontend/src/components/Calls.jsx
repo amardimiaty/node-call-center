@@ -35,7 +35,7 @@ class Calls extends React.Component {
 	}
 
 	render() {
-		const {error, loading, calls, queryString, pool, agent, hasMoreCalls} = this.props
+		const {error, loading, calls, pool, agent, poolId, hasMoreCalls, reload} = this.props
 		const renderRow = this.renderRow.bind(this)
 		const loadMoreCalls = ev => {
 			ev.preventDefault()
@@ -48,13 +48,15 @@ class Calls extends React.Component {
 			<Spacing>
 				{error && <Alert type="error">{error}</Alert>}
 				<h3>Calls</h3>
-				{pool && <Alert type="info" textOnly="true">Filtered calls for pool {pool.phoneNumber}</Alert>}
-				{agent && <Alert type="info" textOnly="true">Filtered calls for agent {agent}</Alert>}
-				<Table.Simple items={calls} columns={this.columns} renderRow={renderRow} loading={loading}>
-				</Table.Simple>
+				{pool && <Alert type="info" className="clickable" onClick={reload({answeredBy: agent})}>Filtered calls for pool {pool.phoneNumber}</Alert>}
+				{agent && <Alert type="info" className="clickable"  onClick={reload({pool: poolId})}>Filtered calls for agent {agent}</Alert>}
+				<div className="messages">
+				{calls.length > 0 ? (<Table.Simple items={calls} columns={this.columns} renderRow={renderRow} loading={loading}>
+				</Table.Simple>) : (<p>No calls</p>)}
 				{hasMoreCalls && <Spacing>
-					<Button onClick={loadMoreCalls}>More</Button>
+					<Button loading={loading} onClick={loadMoreCalls}>More</Button>
 				</Spacing>}
+				</div>
 			</Spacing>
 		)
 	}
@@ -75,7 +77,7 @@ export default connect(
 		})
 		return {
 			calls: shownCalls,
-			hasMoreCalls: (typeof lastCall.isLastPage === 'undefined') ? true : lastCall.isLastPage,
+			hasMoreCalls: (typeof lastCall.isLastPage === 'undefined') ? false : !lastCall.isLastPage,
 			error: state.calls.error,
 			loading: state.calls.loading,
 			queryString,
@@ -87,6 +89,7 @@ export default connect(
 	},
 	dispatch => ({
 		getCalls: (queryString, page) => {
+			page = page || 1
 			if(queryString) {
 				queryString = `${queryString}&page=${page}`
 			} else {
@@ -94,6 +97,14 @@ export default connect(
 			}
 			return dispatch(getCalls(queryString))
 		},
-		getPool: id => dispatch(getPool(id))
+		getPool: id => dispatch(getPool(id)),
+		reload: query => {
+			const queryString = Object.keys(query).filter(k => query[k]).map(k => `${k}=${query[k]}`).join('&')
+			let path = '/pool-calls'
+			if (queryString) {
+				path = `${path}?${queryString}`
+			}
+			dispatch(push(path))
+		}
 	})
 )(Calls)

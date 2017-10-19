@@ -1,7 +1,7 @@
 import request from '../request'
 
 export const GET_CALLS = 'CALLS/GET_CALLS'
-export const GET_POOL = 'CALLS/GET_CALLS'
+export const GET_POOL = 'CALLS/GET_POOL'
 
 export function getCalls(queryString) {
 	let path = '/calls'
