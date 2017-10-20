@@ -27,19 +27,19 @@ class Pools extends React.Component {
 	}
 
 	render() {
-		const {error, loading, saving, changes, pools, setAreaCode, setForwards, setGreeting, savePool} = this.props
+		const {error, loading, saving, changes, pools, savePool, setAreaCode, setForwards, setGreeting} = this.props
 		const renderRow = this.renderRow.bind(this)
 		const isNewPool = !changes.id
 		const areaCodeInput = {
-			value: changes.areaCode,
+			value: changes.areaCode || '',
 			onChange: ev => setAreaCode(ev.target.value)
 		}
-		const forwardersInput = {
-			value: changes.forwardsString,
+		const forwardsInput = {
+			value: changes.forwardsString || '',
 			onChange: ev => setForwards(ev.target.value)
 		}
 		const greetingInput = {
-			value: changes.greeting,
+			value: changes.greeting || '',
 			onChange: ev => setGreeting(ev.target.value)
 		}
 		return (
@@ -56,8 +56,8 @@ class Pools extends React.Component {
 						/>)}
 						<TextField
 							label="Agents phone numbers"
-							name="forwarders"
-							input={forwardersInput}
+							name="forwards"
+							input={forwardsInput}
 							helpText="Agents phone numbers to forward calls (comma separated)"
 							required
 						/>

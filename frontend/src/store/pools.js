@@ -10,6 +10,7 @@ export const SET_AREA_CODE = 'POOLS/SET_AREA_CODE'
 export const SET_FORWARDS = 'POOLS/SET_FORWARDS'
 export const SET_GREETING = 'POOLS/SET_GREETING'
 
+export const SET_ID = 'POOLS/SET_ID'
 
 export function getPools() {
 	return (dispatch, getState) => dispatch(request(GET_POOLS, '/pools'))
@@ -27,7 +28,10 @@ export function savePool() {
 }
 
 export function removePool(id) {
-	return (dispatch, getState) => dispatch(request(REMOVE_POOL, `/pools/${id}`, 'DELETE'))
+	return (dispatch, getState) => {
+		dispatch({type: SET_ID, id})
+		dispatch(request(REMOVE_POOL, `/pools/${id}`, 'DELETE'))
+	}
 }
 
 export default (state = {}, action) => {
@@ -57,10 +61,13 @@ export default (state = {}, action) => {
 		case `${GET_POOLS}_SUCCESS`: {
 			return {...state, error: null, loading: false, pools: action.result || []}
 		}
-		case `${SAVE_POOL}_START`:
+		case `${SAVE_POOL}_START`: {
+			const {changes} = state
+			return {...state, error: null, saving: true, id: changes.id}
+		}
 		case `${REMOVE_POOL}_START`: {
 			const {changes} = state
-			return {...state, error: null, saving: true, id: action.id || changes.id}
+			return {...state, error: null, saving: true}
 		}
 		case `${SAVE_POOL}_ERROR`:
 		case `${REMOVE_POOL}_ERROR`: {
@@ -90,6 +97,9 @@ export default (state = {}, action) => {
 			const pool = Object.assign({}, pools.filter(b => b.id === action.id)[0])
 			pool.forwardsString = (pool.forwards || []).join(', ')
 			return {...state, changes: pool}
+		}
+		case SET_ID: {
+			return {...state, id: action.id}
 		}
 		default: {
 			return {...state}

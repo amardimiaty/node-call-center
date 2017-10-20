@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route, Redirect} from 'react-router'
+import {Route} from 'react-router'
 import {ConnectedRouter} from 'react-router-redux'
 import {BandwidthThemeProvider, Navigation, Page, Spacing} from '@bandwidth/shared-components'
 
