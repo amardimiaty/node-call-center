@@ -66,7 +66,6 @@ export default (state = {}, action) => {
 			return {...state, error: null, saving: true, id: changes.id}
 		}
 		case `${REMOVE_POOL}_START`: {
-			const {changes} = state
 			return {...state, error: null, saving: true}
 		}
 		case `${SAVE_POOL}_ERROR`:

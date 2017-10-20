@@ -4,7 +4,11 @@ import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
 import {Spacing, Table, Button, Alert} from '@bandwidth/shared-components'
-import {getCalls, getPool} from '../store/calls'
+import {getCalls, getPool, CLEAR_POOL} from '../store/calls'
+
+function getQueryString(search) {
+	return (search || '?').substr(1)
+}
 
 class Calls extends React.Component {
 	columns = [
@@ -17,10 +21,15 @@ class Calls extends React.Component {
 	]
 
 	componentWillMount() {
-		if (this.props.poolId) {
-			this.props.getPool(this.props.poolId)
+		const reloadData = queryString => {
+			this.props.getCalls(getQueryString(queryString), 1)
 		}
-		this.props.getCalls(this.props.queryString, this.props.page)
+		this.props.history.listen(location => {
+			if (location.pathname === '/pool-calls'){
+				reloadData(location.search)
+			}
+		})
+		reloadData(this.props.location.search)
 	}
 
 	renderRow(item) {
@@ -48,8 +57,8 @@ class Calls extends React.Component {
 			<Spacing>
 				{error && <Alert type="error">{error}</Alert>}
 				<h3>Calls</h3>
-				{pool && <Alert type="info" className="clickable" onClick={reload({answeredBy: agent})}>Filtered calls for pool {pool.phoneNumber}</Alert>}
-				{agent && <Alert type="info" className="clickable"  onClick={reload({pool: poolId})}>Filtered calls for agent {agent}</Alert>}
+				{pool && <Alert type="info" className="clickable" onClick={() => reload({answeredBy: agent})}>Filtered calls for pool {pool.phoneNumber}</Alert>}
+				{agent && <Alert type="info" className="clickable"  onClick={() => reload({pool: poolId})}>Filtered calls for agent {agent}</Alert>}
 				<div className="messages">
 				{calls.length > 0 ? (<Table.Simple items={calls} columns={this.columns} renderRow={renderRow} loading={loading}>
 				</Table.Simple>) : (<p>No calls</p>)}
@@ -67,12 +76,12 @@ export default connect(
 		const calls = state.calls.calls || []
 		const shownCalls = Array.prototype.concat.apply([], calls.map(c => c.calls))
 		const lastCall = calls[calls.length - 1] || {}
-		const queryString = (state.router.location.search || '?').substr(1)
+		const queryString = getQueryString(state.router.location.search)
 		const query = {}
 		queryString.split('&').map(v => {
 			const values = v.split('=')
 			return {name: values[0], value: decodeURIComponent(values[1])}
-		}).forEach(v => {
+		}).filter(v => v.name).forEach(v => {
 			query[v.name] = v.value
 		})
 		return {
@@ -80,7 +89,6 @@ export default connect(
 			hasMoreCalls: (typeof lastCall.isLastPage === 'undefined') ? false : !lastCall.isLastPage,
 			error: state.calls.error,
 			loading: state.calls.loading,
-			queryString,
 			poolId: query.pool,
 			agent: query.answeredBy,
 			pool: state.calls.pool,
@@ -95,15 +103,19 @@ export default connect(
 			} else {
 				queryString = `page=${page}`
 			}
+			const m = /pool=(\w+)/gi.exec(queryString)
+			if(m) {
+				dispatch(getPool(m[1]))
+			}
 			return dispatch(getCalls(queryString))
 		},
-		getPool: id => dispatch(getPool(id)),
 		reload: query => {
 			const queryString = Object.keys(query).filter(k => query[k]).map(k => `${k}=${query[k]}`).join('&')
 			let path = '/pool-calls'
 			if (queryString) {
 				path = `${path}?${queryString}`
 			}
+			dispatch({type: CLEAR_POOL})
 			dispatch(push(path))
 		}
 	})

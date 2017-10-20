@@ -45,7 +45,7 @@ class App extends React.Component {
 						<Page>
 							<Spacing>
 								<Route path="/pool-calls" component={Calls}/>
-								<Route path="/" component={Pools}/>
+								<Route exact={true} path="/" component={Pools}/>
 							</Spacing>
 						</Page>
 					</div>

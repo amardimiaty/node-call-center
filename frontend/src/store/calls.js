@@ -2,6 +2,7 @@ import request from '../request'
 
 export const GET_CALLS = 'CALLS/GET_CALLS'
 export const GET_POOL = 'CALLS/GET_POOL'
+export const CLEAR_POOL = 'CALLS/CLEAR_POOL'
 
 export function getCalls(queryString) {
 	let path = '/calls'
@@ -37,6 +38,9 @@ export default (state = {}, action) => {
 		}
 		case `${GET_POOL}_SUCCESS`: {
 			return {...state, pool: action.result}
+		}
+		case CLEAR_POOL: {
+			return {...state, pool: null, poolId: null}
 		}
 		default: {
 			return {...state}
