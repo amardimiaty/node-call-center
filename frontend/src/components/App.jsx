@@ -27,6 +27,8 @@ class App extends React.Component {
 			ev.preventDefault()
 		}
 		if (isLoggedIn) {
+			links.push({to: '/', exact: true, content: 'Pools'})
+			links.push({to: '/pool-calls', content: 'Calls'})
 			links.push({to: '#', content: 'Logout', onClick: ev => {
 				this.props.logout().then(() => this.props.getProfile()).then(() => history.push('/login'))
 				ev.preventDefault()
