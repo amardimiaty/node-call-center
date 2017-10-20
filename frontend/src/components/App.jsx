@@ -44,12 +44,8 @@ class App extends React.Component {
 							/>
 						<Page>
 							<Spacing>
-								{ (isLoggedIn) ?
-									(<Redirect from="/" to="/number-pools"/>) :
-									(<Redirect from="/" to="/login"/>)
-								}
-								<Route path="/number-pools" component={Pools}/>
 								<Route path="/pool-calls" component={Calls}/>
+								<Route path="/" component={Pools}/>
 							</Spacing>
 						</Page>
 					</div>
