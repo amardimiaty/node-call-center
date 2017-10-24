@@ -22,7 +22,7 @@ export default (state = {}, action) => {
 			return {...state, error: action.error, loading: false}
 		}
 		case `${GET_CALLS}_START`: {
-			return {...state, error: null, loading: true, calls: []}
+			return {...state, error: null, loading: true}
 		}
 		case `${GET_CALLS}_SUCCESS`: {
 			let calls = state.calls || []

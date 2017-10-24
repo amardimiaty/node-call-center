@@ -39,7 +39,7 @@ class Calls extends React.Component {
 			<Table.Cell>{moment(item.ended).format('lll')}</Table.Cell>
 			<Table.Cell>{item.answeredBy}</Table.Cell>
 			<Table.Cell>{`wait ${item.holdingDuration}s / call ${item.callDuration}s`}</Table.Cell>
-			<Table.Cell>{`${item.status[0].toupperCase()}${item.status.substr(1)}`}</Table.Cell>
+			<Table.Cell>{`${(item.status || '')[0].toUpperCase()}${(item.status || '').substr(1)}`}</Table.Cell>
 		</Table.Row>)
 	}
 
@@ -50,7 +50,8 @@ class Calls extends React.Component {
 			ev.preventDefault()
 			ev.stopPropagation()
 			if (hasMoreCalls) {
-				return this.props.getCalls(this.props.queryString, this.props.page + 1)
+				const query = (this.props.queryString || '').replace(/&page=\d+/, '').replace(/page=\d+/, '')
+				return this.props.getCalls(query, this.props.page + 1)
 			}
 		}
 		return (
@@ -61,7 +62,7 @@ class Calls extends React.Component {
 				{agent && <Alert type="info" className="clickable"  onClick={() => reload({pool: poolId})}>Filtered calls for agent {agent}</Alert>}
 				<div className="messages">
 				{calls.length > 0 ? (<Table.Simple items={calls} columns={this.columns} renderRow={renderRow} loading={loading}>
-				</Table.Simple>) : (<p>No calls</p>)}
+				</Table.Simple>) : (loading ? (null) : (<p>No calls</p>))}
 				{hasMoreCalls && <Spacing>
 					<Button loading={loading} onClick={loadMoreCalls}>More</Button>
 				</Spacing>}
@@ -92,7 +93,8 @@ export default connect(
 			poolId: query.pool,
 			agent: query.answeredBy,
 			pool: state.calls.pool,
-			page: lastCall.page && 1
+			page: lastCall.page || 1,
+			queryString
 		}
 	},
 	dispatch => ({
