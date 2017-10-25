@@ -28,6 +28,7 @@ const mockCallPromise = Promise.resolve([{}]);
 mockCallPromise.sort = () => mockCallPromise;
 mockCallPromise.limit = () => mockCallPromise;
 mockCallPromise.skip = () => mockCallPromise;
+mockCallPromise.populate = () => mockCallPromise;
 td.when(Call.find({user: 'userId'})).thenReturn(mockCallPromise);
 td.when(Call.find({user: 'userId', pool: 'poolId'})).thenReturn(mockCallPromise);
 td.when(Call.find({user: 'userId', answeredBy: '+12345678901'})).thenReturn(mockCallPromise);

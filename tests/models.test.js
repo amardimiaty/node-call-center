@@ -10,7 +10,7 @@ td.replace(User.prototype, 'save');
 test('User#getByAuth0Profile() should return (and create if need) user data for auth0 profile', async t => {
 	const mockUser = {};
 	td.when(User.findOneAndUpdate({externalId: 'id'}, {$set: {name: 'name'}}, {upsert: true})).thenResolve(mockUser);
-	const user = await User.getByAuth0Profile({id: 'id', name: 'name'});
+	const user = await User.getByAuth0Profile({sub: 'id', name: 'name'});
 	t.is(user, mockUser);
 });
 
