@@ -12,6 +12,9 @@
 	"addons": ["mongolab:sandbox"],
 	"private": false,
 	"env": {
+		"HEROKU_APP_NAME": {
+			"required": true
+		},
 		"BANDWIDTH_USER_ID": {
 			"description": "Your Bandwidth User Id"
 		},
