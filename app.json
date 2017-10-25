@@ -34,13 +34,9 @@
 		},
 		"AUTH0_CLIENT_SECRET": {
 			"description": "Auth0 client secret"
-		},
-		"HEROKU_APP_NAME": {
-			"required": false,
-			"description": "Ignore this field"
 		}
 	},
 	"scripts": {
-		"postdeploy": "heroku config:set HOST=${HEROKU_APP_NAME}.herokuapp.com --app ${HEROKU_APP_NAME}"
+		"postdeploy": "heroku config:set HEROKU_URL=$(heroku apps:info -s  | grep web_url | cut -d= -f2)"
 	}
 }
