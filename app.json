@@ -9,11 +9,6 @@
 		"calls",
 		"buttons"
 	],
-	"buildpacks": [
-		{
-			"url": "https://github.com/heroku/heroku-buildpack-cli.git"
-		}
-	],
 	"addons": ["mongolab:sandbox"],
 	"private": false,
 	"env": {
@@ -35,8 +30,5 @@
 		"AUTH0_CLIENT_SECRET": {
 			"description": "Auth0 client secret"
 		}
-	},
-	"scripts": {
-		"postdeploy": "heroku config:set HOST=${HEROKU_APP_NAME}.herokuapp.com --app ${HEROKU_APP_NAME}"
 	}
 }
