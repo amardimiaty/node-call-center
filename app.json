@@ -14,7 +14,7 @@
 			"url": "https://github.com/heroku/heroku-buildpack-cli.git"
 		}
 	],
-	"addons": ["mongolab:sandbox", "heroku-redis:hobby-dev"],
+	"addons": ["mongolab:sandbox"],
 	"private": false,
 	"env": {
 		"BANDWIDTH_USER_ID": {
