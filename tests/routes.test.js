@@ -57,6 +57,31 @@ test('GET /login should redirect to / after authentification', async t => {
 	t.pass();
 });
 
+test('POST /logout should remove auth data', async t => {
+	const ctx = {
+		method: 'POST',
+		path: '/logout',
+		logout: td.function()
+	};
+	td.when(ctx.logout()).thenReturn();
+	await routes(ctx, null);
+	t.pass();
+});
+
+test('GET /profile should return user data', async t => {
+	const ctx = {
+		state: {
+			user: {
+				id: 'userId'
+			}
+		},
+		method: 'GET',
+		path: '/profile'
+	};
+	await routes(ctx, null);
+	t.is(ctx.body.id, 'userId');
+});
+
 test('GET /pools should return pools', async t => {
 	const ctx = {
 		isAuthenticated: () => true,
