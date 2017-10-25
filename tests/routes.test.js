@@ -50,7 +50,8 @@ test('GET /login should redirect to / after authentification', async t => {
 	const ctx = {
 		method: 'GET',
 		path: '/login',
-		redirect: td.function()
+		redirect: td.function(),
+		request: {host: 'localhost'}
 	};
 	td.when(ctx.redirect('/')).thenReturn();
 	await routes(ctx, null);
