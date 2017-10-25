@@ -9,12 +9,14 @@
 		"calls",
 		"buttons"
 	],
+	"buildpacks": [
+		{
+			"url": "https://github.com/heroku/heroku-buildpack-cli.git"
+		}
+	],
 	"addons": ["mongolab:sandbox"],
 	"private": false,
 	"env": {
-		"HEROKU_APP_NAME": {
-			"required": true
-		},
 		"BANDWIDTH_USER_ID": {
 			"description": "Your Bandwidth User Id"
 		},
@@ -32,6 +34,13 @@
 		},
 		"AUTH0_CLIENT_SECRET": {
 			"description": "Auth0 client secret"
+		},
+		"HEROKU_APP_NAME": {
+			"required": false,
+			"description": "Ignore this field"
 		}
+	},
+	"scripts": {
+		"postdeploy": "heroku config:set HOST=${HEROKU_APP_NAME}.herokuapp.com --app ${HEROKU_APP_NAME}"
 	}
 }
