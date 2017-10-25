@@ -1,25 +1,30 @@
 {
-  "name": "node-click-to-call",
-  "description": "Bandwidth API Sample App Click to call",
-  "logo": "https://avatars2.githubusercontent.com/u/12057884?v=3&s=200",
-  "keywords": [
-    "node",
-    "bandwidth",
-    "click",
+	"name": "node-click-to-call",
+	"description": "Bandwidth API Sample App Click to call",
+	"logo": "https://avatars2.githubusercontent.com/u/12057884?v=3&s=200",
+	"keywords": [
+		"node",
+		"bandwidth",
+		"click",
 		"calls",
 		"buttons"
-  ],
+	],
+	"buildpacks": [
+		{
+			"url": "https://github.com/heroku/heroku-buildpack-cli.git"
+		}
+	],
 	"addons": ["mongolab:sandbox", "heroku-redis:hobby-dev"],
 	"private": false,
-  "env": {
-    "BANDWIDTH_USER_ID": {
-      "description": "Your Bandwidth User Id"
-    },
-    "BANDWIDTH_API_TOKEN": {
-      "description": "Your Bandwidth Api Token"
-    },
-    "BANDWIDTH_API_SECRET": {
-      "description": "Your Bandwidth Api Secret"
+	"env": {
+		"BANDWIDTH_USER_ID": {
+			"description": "Your Bandwidth User Id"
+		},
+		"BANDWIDTH_API_TOKEN": {
+			"description": "Your Bandwidth Api Token"
+		},
+		"BANDWIDTH_API_SECRET": {
+			"description": "Your Bandwidth Api Secret"
 		},
 		"AUTH0_DOMAIN": {
 			"description": "Your domain on Auth0 for authentification"
@@ -29,9 +34,9 @@
 		},
 		"AUTH0_CLIENT_SECRET": {
 			"description": "Auth0 client secret"
-		},
-    "NPM_CONFIG_PRODUCTION": {
-      "value": "false"
-    }
-  }
+		}
+	},
+	"scripts": {
+		"postdeploy": "heroku config:set HOST=${HEROKU_APP_NAME}.herokuapp.com --app ${HEROKU_APP_NAME}"
+	}
 }
