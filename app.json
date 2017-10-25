@@ -37,6 +37,6 @@
 		}
 	},
 	"scripts": {
-		"postdeploy": "heroku config:set HEROKU_URL=$(heroku apps:info -s  | grep web_url | cut -d= -f2)"
+		"postdeploy": "heroku config:set HOST=$(heroku apps:info -s | grep web_url | cut -d= -f2 |  cut -d'/' -f3)"
 	}
 }
