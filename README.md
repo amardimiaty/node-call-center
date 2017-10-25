@@ -45,7 +45,6 @@ export BANDWIDTH_API_SECRET=<YOUR-API-SECRET>
 export AUTH0_DOMAIN=<YOUR-AUTH0-DOMAIN>
 export AUTH0_CLIENT_ID=<YOUR-AUTH0-CLIENT-ID>
 export AUTH0_CLIENT_SECRET=<YOUR-AUTH0-CLIENT-SECRET>
-export HOST=<EXTERNAL-HOST-NAME-OF-THIS-APP>
 
 # or (as alternative) fill these settings in .env file
 
@@ -67,7 +66,7 @@ ngrok http 3000
 # in another terminal session
 cd node-call-center
 
-# fill .env file with right values (don't forget fill HOST with right host name from ngrok)
+# fill .env file with right values
 cp ./.env-demo ./.env
 vim ./.env
 

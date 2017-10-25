@@ -1,6 +1,6 @@
 {
 	"name": "node-click-to-call",
-	"description": "Bandwidth API Sample App Click to call",
+	"description": "Simple app to work with pools of phone numbers",
 	"logo": "https://avatars2.githubusercontent.com/u/12057884?v=3&s=200",
 	"keywords": [
 		"node",
@@ -28,10 +28,6 @@
 		},
 		"AUTH0_CLIENT_SECRET": {
 			"description": "Auth0 client secret"
-		},
-		"HEROKU_APP_NAME": {
-			"required": true,
-			"description": "Application name again"
 		}
 	}
 }
