@@ -68,7 +68,8 @@ ngrok http 3000
 cd node-call-center
 
 # fill .env file with right values (don't forget fill HOST with right host name from ngrok)
-# vim ./.env
+cp ./.env-demo ./.env
+vim ./.env
 
 # then run the app (it will listen port 8080)
 PORT=3000 docker-compose up -d
