@@ -5,14 +5,8 @@
 	"keywords": [
 		"node",
 		"bandwidth",
-		"click",
-		"calls",
-		"buttons"
-	],
-	"buildpacks": [
-		{
-			"url": "https://github.com/heroku/heroku-buildpack-cli.git"
-		}
+		"call",
+		"center"
 	],
 	"addons": ["mongolab:sandbox"],
 	"private": false,
@@ -39,8 +33,5 @@
 			"required": true,
 			"description": "Application name again"
 		}
-	},
-	"scripts": {
-		"postdeploy": "heroku config:set HOST=${HEROKU_APP_NAME}.herokuapp.com --app ${HEROKU_APP_NAME}"
 	}
 }
