@@ -12,6 +12,22 @@ Simple app to work with pools of phone numbers.
 - [NodeJS 8+](https://nodejs.org/en/)
 - [Git](https://git-scm.com/)
 
+### How to get Auth0 account data
+
+* Go to [Auth0 Dashboard](https://manage.auth0.com/#/clients), login (if required) and press "New client"
+* Enter app name and choose client type "Regular Web Applications". Press "Create".
+
+![](/.images/create-client.png)
+
+* Switch to tab "Settings" of created client and copy domain name, Client ID and Client Secret
+
+![](/.images/client.png)
+
+* Scroll to bottom of setting and set "Allowed Callback URLs" with https://YOUR-HOST/auth0/callback where YOUR-HOSTis name of host where this application is located.
+
+![](/.images/callback.png)
+
+* Press "Save".
 
 ## Build and Deploy
 
