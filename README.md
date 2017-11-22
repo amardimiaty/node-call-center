@@ -1,8 +1,15 @@
-## Call Center Node Example
+<div align="center">
 
-[![Build Status](https://travis-ci.org/BandwidthExamples/node-call-center.svg?branch=master)](https://travis-ci.org/BandwidthExamples/node-call-center)
+# Call Center Node Example
+
+<a href="http://dev.bandwidth.com"><img src="https://s3.amazonaws.com/bwdemos/BW-VMP.png"/></a>
+</div>
 
 Simple app to work with pools of phone numbers.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+[![Build Status](https://travis-ci.org/BandwidthExamples/node-call-center.svg?branch=master)](https://travis-ci.org/BandwidthExamples/node-call-center)
 
 ## Prerequisites
 - Configured Machine with Ngrok/Port Forwarding
