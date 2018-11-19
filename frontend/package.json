@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@bandwidth/shared-components": "^2.0.11",
-    "auth0-js": "^8.10.1",
+    "auth0-js": ">=9.3.0",
     "history": "^4.6.3",
     "moment": "^2.18.1",
     "object-assign": "^4.1.1",
